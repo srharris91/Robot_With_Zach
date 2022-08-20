@@ -37,15 +37,20 @@ for event in gamepad.read_loop():
                 GPIO.output(pin16,GPIO.LOW) # left backwards alone
                 GPIO.output(pin20,GPIO.LOW) # nothing (switch 21)
                 GPIO.output(pin21,GPIO.LOW) # right forward alone
-                print('Y')
+                print('Y Breaking')
             elif keyevent.scancode == ecodes.BTN_X:
                 GPIO.output(pin12,GPIO.LOW)
                 GPIO.output(pin16,GPIO.LOW)
                 GPIO.output(pin20,GPIO.LOW)
                 GPIO.output(pin21,GPIO.LOW)
-                print('X, breaking')
+                print('X, Breaking')
+            elif keyevent.scancode == ecodes.BTN_START:
+                GPIO.output(pin12,GPIO.LOW)
+                GPIO.output(pin16,GPIO.LOW)
+                GPIO.output(pin20,GPIO.LOW)
+                GPIO.output(pin21,GPIO.LOW)
+                print('Start, Kill')
                 break
-                print('Left')
             elif keyevent.scancode == ecodes.BTN_B:
                 GPIO.output(pin12,GPIO.LOW) # nothing (switch 16?)
                 GPIO.output(pin16,GPIO.HIGH) # left backwards alone
