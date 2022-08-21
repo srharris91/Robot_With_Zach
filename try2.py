@@ -86,7 +86,7 @@ for event in gamepad.read_loop():
         #GPIO.output(pin16,GPIO.LOW)
         #GPIO.output(pin20,GPIO.LOW)
         #GPIO.output(pin21,GPIO.LOW)
-        time.sleep(1)
+        #time.sleep(1)
     #GPIO.output(pin12,GPIO.LOW)
     #GPIO.output(pin16,GPIO.HIGH)
     #GPIO.output(pin20,GPIO.LOW)
