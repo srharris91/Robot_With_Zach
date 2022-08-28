@@ -24,7 +24,7 @@ pl.start(0)
 
 maxdc = 80
 STICK_MAX = 65536
-TRIGGER_MAX = 1023
+TRIGGER_MAX = 255
 CENTER_TOLERANCE=10
 print(dir(ecodes))
 print(ecodes.ABS_BRAKE)
@@ -39,10 +39,10 @@ axis = {
         ecodes.ABS_RZ: 'rt',
         }
 center={
-        'ls_x': STICK_MAX/2,
-        'ls_y': STICK_MAX/2,
-        'rs_x': STICK_MAX/2,
-        'rs_y': STICK_MAX/2,
+        'ls_x': 0,
+        'ls_y': 0,
+        'rs_x': 0,
+        'rs_y': 0,
         'lt': 0,
         'rt': 0,
         }
@@ -141,6 +141,7 @@ for event in gamepad.read_loop():
             print('unknown event')
     elif event.type == ecodes.EV_ABS:
         keyevent = categorize(event)
+        print('event.value = ',event.value)
         if axis[event.code] in ['ls_x', 'ls_y','rs_x','rs_y','lt','rt']:
             last[axis[event.code]] = event.value
 
@@ -157,9 +158,17 @@ for event in gamepad.read_loop():
                 print('value = ',value)
             elif axis[event.code] == 'ls_y':
                 if value<0:
-                    print('forward')
+                    print('forward, value=',value,maxdc*value/(STICK_MAX/2))
+                    GPIO.output(pin12,GPIO.HIGH) # nothing (switch 16?)
+                    pl.ChangeDutyCycle(abs(maxdc*value/(STICK_MAX/2))) # left
+                    GPIO.output(pin20,GPIO.LOW) # nothing (switch 21)
+                    pr.ChangeDutyCycle(abs(maxdc*value/(STICK_MAX/2))) # right
                 else:
-                    print('backward')
+                    print('backward, value=',value,maxdc*value/(STICK_MAX/2))
+                    GPIO.output(pin12,GPIO.LOW) # nothing (switch 16?)
+                    pl.ChangeDutyCycle(abs(maxdc*value/(STICK_MAX/2))) # left
+                    GPIO.output(pin20,GPIO.HIGH) # nothing (switch 21)
+                    pr.ChangeDutyCycle(abs(maxdc*value/(STICK_MAX/2))) # right
                 print('value = ',value)
             elif axis[event.code] == 'rs_x':
                 if value<0:
@@ -178,13 +187,23 @@ for event in gamepad.read_loop():
                     print('LT negative')
                 else:
                     print('LT positive')
+                    GPIO.output(pin12,GPIO.LOW) # nothing (switch 16?)
+                    pl.ChangeDutyCycle(maxdc*value/TRIGGER_MAX) # left
+                    GPIO.output(pin20,GPIO.LOW) # nothing (switch 21)
+                    pr.ChangeDutyCycle(maxdc*value/TRIGGER_MAX) # right
                 print('value = ',value)
+                print('value/MAX = ',value/TRIGGER_MAX)
             elif axis[event.code] == 'rt':
                 if value<0:
                     print('RT negative')
                 else:
+                    GPIO.output(pin12,GPIO.HIGH) # nothing (switch 16?)
+                    pl.ChangeDutyCycle(maxdc*value/TRIGGER_MAX) # left
+                    GPIO.output(pin20,GPIO.HIGH) # nothing (switch 21)
+                    pr.ChangeDutyCycle(maxdc*value/TRIGGER_MAX) # right
                     print('RT positive')
                 print('value = ',value)
+                print('value/MAX = ',value/TRIGGER_MAX)
 
     else:
         print('did not push ABXY')
